@@ -89,6 +89,16 @@ body {
 
 .tiptap{
 
+.ProseMirror a {
+  @apply text-blue-600;
+  cursor: pointer;
+}
+
+.ProseMirror a:hover {
+  @apply underline;
+}
+
+  }
 
 img {
     display: block;
@@ -248,4 +258,3 @@ img {
       margin: 0;
     }
   }
-}
