@@ -17,6 +17,8 @@ import TableCell from '@tiptap/extension-table-cell'
 import ImageResize from 'tiptap-extension-resize-image'
 import Underline from '@tiptap/extension-underline'
 import {useEditorStore} from '@/store/use-editor-store';
+import {FontSizeExtension } from '@/extensions/font-size';
+import { LineHeightExtension } from '@/extensions/line-height';
 
 export const Editor = () => { 
 
@@ -54,6 +56,10 @@ export const Editor = () => {
     },
     extensions: [
     StarterKit,
+    LineHeightExtension.configure({
+  types: ["heading", "paragraph"],
+}),
+    FontSizeExtension,
     TextAlign.configure({
       types: ['heading', 'paragraph'],
     }),
