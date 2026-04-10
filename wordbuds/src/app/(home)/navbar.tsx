@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import {UserButton} from "@clerk/nextjs"
 import { SearchInput } from "./serach-input";
 
 export const Navbar = () => {
@@ -10,9 +11,10 @@ export const Navbar = () => {
                 <Image src="/logo.svg" alt="Logo" width={36} height={36} />
                 </Link>
                 <h3 className="text-xl">Docs</h3>
+                
             </div>
             <SearchInput />
-            <div />
+            <UserButton />
         </nav>
     );
 };
