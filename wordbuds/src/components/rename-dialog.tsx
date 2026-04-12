@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Ghost } from "lucide-react";
+import { toast } from "sonner";
 
 interface RenameDialogProps{
     documentID: Id<"documents">;
@@ -24,8 +25,9 @@ export const RenameDialog = ({documentID, initialTitle,children}:RenameDialogPro
         e.preventDefault();
         setIsUpdating(true);
 
-        update({id:documentID,title:title.trim() || "Untitled "}).then(()=>{setOpen(false);}).finally(()=>{
+        update({id:documentID,title:title.trim() || "Untitled "}).catch(()=> toast.error("Something went wrong")).then(()=> toast.error("Document Updated")).finally(()=>{
             setIsUpdating(false);
+            setOpen(false);
         })
     }
     return(
@@ -33,7 +35,7 @@ export const RenameDialog = ({documentID, initialTitle,children}:RenameDialogPro
             <DialogTrigger asChild>
                 {children}
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent onClick={(e)=>{e.stopPropagation()}}>
                 <form onSubmit={onSubmit}>
                     <DialogHeader>
                         <DialogTitle>

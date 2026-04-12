@@ -8,7 +8,9 @@ export const create = mutation({
         if(!user){
             throw new ConvexError("Unauthorised");
         }
-        return await ctx.db.insert("documents",{title: args.title ?? "Untitled document",ownerID:user.subject,initialContent:args.initialContent})
+        const organisationID = (user.organisation_id ?? undefined) as | string | undefined;
+
+        return await ctx.db.insert("documents",{title: args.title ?? "Untitled document",ownerID:user.subject,organisationID,initialContent:args.initialContent})
     },
 });
 export const get = query({
@@ -18,8 +20,18 @@ export const get = query({
         if(!user){
             throw new ConvexError("Unauthorised")
         }
+        const organisationId = (user.organisation_id ?? undefined) as | string | undefined;
+
+        if(search && organisationId){
+            return await ctx.db.query("documents").withSearchIndex("search_title",(q)=> q.search("title",search).eq("organisationID",organisationId)).paginate(paginationOpts)
+        }
+
         if(search){
             return await ctx.db.query("documents").withSearchIndex("search_title",(q) => q.search("title",search).eq("ownerID",user.subject)).paginate(paginationOpts)
+        }
+        if(organisationId){
+            return await ctx.db.query("documents").withIndex("by_organisation_id",(q)=> q.eq("organisationID",organisationId)).paginate(paginationOpts);
+            
         }
         return await ctx.db.query("documents").withIndex("by_owner_id",(q)=> q.eq("ownerID",user.subject)).paginate(paginationOpts);
     }
@@ -32,12 +44,14 @@ export const removeById = mutation({
         if(!user){
             throw new ConvexError("Unauthorised")
         }
+        const organisationId = (user.organisation_id ?? undefined) as | string | undefined;
+
         const document = await ctx.db.get(args.id);
         if(!document){
             throw new ConvexError("Document Not Found");
         }
         const isOwner = document.ownerID === user.subject;
-        if(!isOwner){
+        if(!isOwner && !(document.organisationID === organisationId)){
             throw new ConvexError("Unauthorised");
         }
         return await ctx.db.delete(args.id);
