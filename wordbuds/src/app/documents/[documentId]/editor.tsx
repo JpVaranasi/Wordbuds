@@ -20,9 +20,11 @@ import {useEditorStore} from '@/store/use-editor-store';
 import {FontSizeExtension } from '@/extensions/font-size';
 import { LineHeightExtension } from '@/extensions/line-height';
 import { Ruler } from './ruler';
+import { useLiveblocksExtension } from '@liveblocks/react-tiptap';
+import { Threads } from './threads';
 
 export const Editor = () => { 
-
+    const liveblocks = useLiveblocksExtension();
   const {setEditor} = useEditorStore();
   const editor = useEditor({
     onCreate({editor}){
@@ -56,7 +58,10 @@ export const Editor = () => {
       },
     },
     extensions: [
-    StarterKit,
+    StarterKit.configure({
+      history:false, 
+    }),
+    liveblocks,
     LineHeightExtension.configure({
   types: ["heading", "paragraph"],
 }),
@@ -88,20 +93,6 @@ export const Editor = () => {
     TaskList
   ],
      content: `
-        <table>
-          <tbody>
-            <tr>
-              <th>Name</th>
-              <th colspan="3">Description</th>
-            </tr>
-            <tr>
-              <td>Cyndi Lauper</td>
-              <td>Singer</td>
-              <td>Songwriter</td>
-              <td>Actress</td>
-            </tr>
-          </tbody>
-        </table>
       `,
     // Don't render immediately on the server to avoid SSR issues
     immediatelyRender: false,
@@ -116,6 +107,7 @@ export const Editor = () => {
       <Ruler/> 
       <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0"> 
         <EditorContent editor={editor} />
+        <Threads editor={editor} />
       </div> 
     </div> 
   );
