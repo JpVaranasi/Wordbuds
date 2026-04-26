@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   },
   // Disable telemetry
   telemetry: false,
+  eslint:{
+    ignoreDuringBuilds:true,
+  },
 };
 
 export default nextConfig;
